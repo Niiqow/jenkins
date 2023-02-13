@@ -1,33 +1,32 @@
 pipeline {
     agent any
 
-        stages {
- 
-            stage ('test') {
-                steps {
-                  dir("build_java"){
-                        echo "mvn clean compile test"
-                  }
-                   
-                   
-                }
-            }
+    environment {
+        PATH = "$PATH:/opt/homebrew/bin"
+    }
 
-            stage ('Build application') {
-                steps {
-                    dir("build_java"){
-
-                        sh "mvn -f pom.xml clean install -Dmaven.test.skip=true"
-                        sh "tree"
-                    }   
+    stages {
+        stage ('test') {
+            steps {
+                dir("build_java"){
+                    echo "mvn clean compile test"
                 }
-            }
-  
-            stage ('Create docker image') {
-                steps {
-                 echo "creando docker"
-                }
-
             }
         }
+
+        stage ('Build application') {
+            steps {
+                dir("build_java"){
+                    sh "mvn -f pom.xml clean install -Dmaven.test.skip=true"
+                    sh "tree"
+                }   
+            }
+        }
+
+        stage ('Create docker image') {
+            steps {
+                echo "creando docker"
+            }
+        }
+    }
 }
